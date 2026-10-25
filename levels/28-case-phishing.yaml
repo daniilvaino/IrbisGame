@@ -8,7 +8,7 @@ points: 200
 theory: |
   Большие расследования строятся по шагам: каждое соединение отвечает на один вопрос.
   Совет: собирайте запрос постепенно и смотрите режим «Пошагово» — видно, сколько строк остаётся после каждого оператора.
-  Соединять можно цепочкой: `A | join (B) on X | join (C) on $left.Y == $right.Z`.
+  Соединять можно цепочкой: `A | join kind=inner (B) on X | join kind=inner (C) on $left.Y == $right.Z`.
 example: |
   EmailEvents
   | where Sender == "it-support@mayak-helpdesk.net"

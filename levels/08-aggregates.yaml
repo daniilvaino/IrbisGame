@@ -13,8 +13,9 @@ example: |
   Transactions
   | summarize Total = sum(Amount), Avg = avg(Amount), Merchants = dcount(Merchant) by Category
 task: |
-  Для отчёта руководству по каждому отделу (`Department`) посчитайте: число сотрудников,
-  средний `PerformanceScore` и сколько разных офисов (`Office`) в отделе. Имена колонок — на ваш вкус.
+  По таблице `Employees` для каждого отдела (`Department`) посчитайте число сотрудников,
+  средний `PerformanceScore` и число различных значений `Office`.
+  Выведите отдел и эти три показателя. Имена вычисляемых колонок — на ваш вкус; порядок строк не важен.
 hints:
   - |-
     Три агрегата: `count()`, `avg(PerformanceScore)`, `dcount(Office)`.

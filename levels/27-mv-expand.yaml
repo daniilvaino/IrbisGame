@@ -8,7 +8,8 @@ points: 140
 theory: |
   `mv-expand Колонка` разворачивает массив: строка с массивом из трёх элементов превращается в три строки,
   в каждой — один элемент. Элементу можно дать имя: `mv-expand File = Attachments`.
-  Пустой массив строк не даёт. После разворота элемент — dynamic, его свойства читаются как обычно: `File.name`.
+  Пустой массив строк не даёт. После разворота элемент и его свойства имеют тип dynamic: `File.name`.
+  Для строковой колонки с именем файла используйте `tostring(File.name)`.
   BabyKusto `mv-expand` не реализует.
 example: |
   EmailEvents
@@ -17,8 +18,10 @@ example: |
   | mv-expand File = Attachments
   | project MessageId, Name = tostring(File.name), Size = tolong(File.size)
 task: |
-  Проверьте исходящую почту (`Direction == "Outbound"`): разверните вложения и найдите файлы, в имени которых
-  есть `irbis`. Выведите `Timestamp`, `Sender`, `Recipient`, `FileName`.
+  В таблице `EmailEvents` выберите исходящие письма (`Direction == "Outbound"`) и разверните массив вложений `Attachments`.
+  Найдите вложения, в имени которых есть подстрока `irbis` без учёта регистра. Ищите именно в свойстве `name`, а не во всём объекте вложения.
+  Выведите только `Timestamp`, `Sender`, `Recipient`, `FileName`: по одной строке на подходящее вложение.
+  Колонка `FileName` должна иметь тип string — приведите имя файла через `tostring()`. Порядок строк не важен.
 hints:
   - |-
     После `mv-expand File = Attachments` добавьте `extend FileName = tostring(File.name)` и фильтр `contains "irbis"`.

@@ -16,8 +16,9 @@ example: |
   | extend H = parse_json(Headers)
   | project Sender, Mailer = tostring(H["X-Mailer"]), Spf = tostring(H.SPF)
 task: |
-  Для писем с доменов-двойников (`@mayak-helpdesk.net` и `@mayak-pay.net`) достаньте из заголовков
-  `X-Originating-IP` — адрес, с которого письма отправлялись. Выведите уникальные пары `Sender`, `OriginIp`.
+  В таблице `EmailEvents` выберите письма от отправителей, чьи адреса заканчиваются на `@mayak-helpdesk.net` или `@mayak-pay.net`.
+  Из JSON-строки `Headers` извлеките свойство `X-Originating-IP` в строковую колонку `OriginIp` (используйте `tostring()`).
+  Выведите только уникальные пары `Sender`, `OriginIp`. Порядок строк не важен.
 hints:
   - |-
     Отбор: `Sender endswith "@mayak-helpdesk.net" or Sender endswith "@mayak-pay.net"`.

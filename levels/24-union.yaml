@@ -17,9 +17,10 @@ example: |
   | sort by Timestamp desc
   | take 20
 task: |
-  Подрядчик Кирилл Лосев (`E03981`) раз за разом ломился в лабораторию. Соберите его хронологию:
-  проходы из `BadgeEvents` (`Source = "badge"`, `Detail` = дверь) и операции по карте из `Transactions`
-  (`Source = "card"`, `Detail` = продавец). Колонки `Timestamp`, `Source`, `Detail`, по возрастанию времени.
+  Соберите хронологию событий подрядчика Кирилла Лосева (`EmployeeId == "E03981"`):
+  все его события из `BadgeEvents`, включая входы, выходы и отказы (`Source = "badge"`, `Detail` — значение `Door`),
+  и все операции из `Transactions`, включая отклонённые (`Source = "card"`, `Detail` — значение `Merchant`).
+  Выведите только `Timestamp`, `Source`, `Detail` и отсортируйте по `Timestamp` по возрастанию.
 hints:
   - |-
     Две части: `BadgeEvents | where EmployeeId == "E03981" | project Timestamp, Source = "badge", Detail = Door` и аналогично для карт.

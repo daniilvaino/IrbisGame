@@ -1,7 +1,7 @@
 id: 15-extend
 chapter: 4
 order: 1
-title: Мегабайты
+title: Мебибайты
 topic: extend
 engines: [BabyKusto, KustoLoco]
 points: 100
@@ -15,8 +15,9 @@ example: |
   | project Merchant, Amount, AmountK
   | take 5
 task: |
-  Переведите `BytesSent` в мегабайты (`SentMB = BytesSent / 1048576.0`) и покажите соединения,
-  где отправлено больше 100 МБ: `Timestamp`, `UserId`, `DstIp`, `SentMB`.
+  В таблице `NetworkLogs` переведите `BytesSent` в мебибайты (МиБ): `SentMB = BytesSent / 1048576.0`.
+  Оставьте соединения, где отправлено строго больше 100 МиБ. Выведите только `Timestamp`, `UserId`, `DstIp`, `SentMB`.
+  Имя вычисляемой колонки `SentMB` сохраняем для этого упражнения. Порядок строк не важен.
 hints:
   - |-
     `extend SentMB = ...`, потом `where SentMB > 100`.

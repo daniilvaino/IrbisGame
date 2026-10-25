@@ -14,7 +14,8 @@ example: |
   | where Result == "denied"
   | count
 task: |
-  Сколько всего писем пришло в компанию извне (`Direction == "Inbound"`)?
+  Сколько всего писем в таблице `EmailEvents` пришло в компанию извне (`Direction == "Inbound"`)?
+  Ответ — одна строка с одной колонкой: число писем.
 hints:
   - |-
     Отфильтруйте `EmailEvents` по направлению письма.

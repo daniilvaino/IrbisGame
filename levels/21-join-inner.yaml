@@ -8,7 +8,8 @@ points: 120
 theory: |
   `join kind=inner Правая on Ключ` соединяет строки двух таблиц с одинаковым значением ключа; остаются только пары.
   Если ключ называется по-разному: `on $left.UserId == $right.EmployeeId`.
-  Правой стороной может быть подзапрос в скобках: `join (Employees | project EmployeeId, Name) on EmployeeId`.
+  Правой стороной может быть подзапрос в скобках: `join kind=inner (Employees | project EmployeeId, Name) on EmployeeId`.
+  Указывайте `kind=inner` явно: без `kind` используется `innerunique`, который убирает повторы ключей слева перед соединением.
   Совпадающие имена колонок правой таблицы получают суффикс `1`.
 example: |
   Transactions
@@ -16,8 +17,9 @@ example: |
   | join kind=inner Employees on EmployeeId
   | project Timestamp, Name, Merchant, Amount
 task: |
-  Кто пытался попасть в «Лабораторию Ирбис» и получил отказ? Соедините отказы на двери
-  `"Лаборатория Ирбис"` с `Employees` и выведите `Timestamp`, `Name`, `Department`.
+  В таблице `BadgeEvents` найдите все события с `Door == "Лаборатория Ирбис"` и `Result == "denied"`.
+  Соедините их с таблицей `Employees` по `EmployeeId` и выведите только `Timestamp`, `Name`, `Department`.
+  Сохраните отдельную строку для каждого отказа, включая повторные отказы одному сотруднику. Порядок строк не важен.
 hints:
   - |-
     Сначала отфильтруйте `BadgeEvents` по двери и результату, потом `join kind=inner Employees on EmployeeId`.

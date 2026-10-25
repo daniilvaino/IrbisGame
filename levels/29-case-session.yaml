@@ -15,8 +15,11 @@ example: |
   | sort by Sent desc
   | take 5
 task: |
-  Под чьей учётной записью работали с адреса `198.51.100.23`? Для каждой такой учётки посчитайте `Sent` (сумма `BytesSent`),
-  `Start` и `End` (первое и последнее соединение) и выведите `Name`, `Department`, `Sent`, `Start`, `End`.
+  В таблице `NetworkLogs` найдите соединения с `SrcIp == "198.51.100.23"`.
+  Для каждого `UserId` посчитайте `Sent` — сумму `BytesSent`, `Start` — минимальный `Timestamp`, `End` — максимальный `Timestamp`.
+  `Start` и `End` — времена начала первого и последнего соединений; `DurationSec` учитывать не нужно.
+  Добавьте имя и отдел из `Employees`, сопоставив `UserId` с `EmployeeId`.
+  Выведите только `Name`, `Department`, `Sent`, `Start`, `End`. Порядок строк не важен.
 hints:
   - |-
     `NetworkLogs | where SrcIp == "198.51.100.23" | summarize Sent = sum(BytesSent), Start = min(Timestamp), End = max(Timestamp) by UserId`

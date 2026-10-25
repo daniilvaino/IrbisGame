@@ -16,8 +16,10 @@ example: |
   | project Merchant, Country = tostring(Details.geo.country), Channel = tostring(Details.channel)
   | take 10
 task: |
-  В оплатах `CloudNest VPS` поле `Details.invoice` описывает арендованный сервер. Выведите `Timestamp`, `EmployeeId`,
-  `Ip` (из `invoice.ip`) и `Plan` (из `invoice.plan`) для всех таких операций.
+  В таблице `Transactions` выберите все операции с `Merchant == "CloudNest VPS"`.
+  Выведите только `Timestamp`, `EmployeeId`, `Ip` из `Details.invoice.ip` и `Plan` из `Details.invoice.plan`.
+  Значения `Ip` и `Plan` приведите к типу string через `tostring()`: прямое чтение свойства сохраняет тип dynamic.
+  Порядок строк не важен.
 hints:
   - |-
     `Transactions | where Merchant == "CloudNest VPS"` — и дальше `project` со свойствами `Details.invoice...`.
