@@ -1,0 +1,29 @@
+id: 20-datetime
+chapter: 4
+order: 6
+title: Сколько длилась сессия
+topic: datetime-арифметика
+engines: [BabyKusto, KustoLoco]
+points: 120
+theory: |
+  Разность двух datetime — это timespan: `End - Start` даст, например, `00:44:38`.
+  К дате можно прибавить интервал: `Timestamp + 2h`. Агрегаты `min()` / `max()` работают и с датами.
+  Ответ здесь — одно значение типа timespan.
+example: |
+  Employees
+  | where Name == "Глеб Штерн"
+  | project Tenure = now() - HireDate
+task: |
+  Сколько длилась сессия злоумышленника — от первого до последнего соединения с `SrcIp == "198.51.100.23"`?
+hints:
+  - |-
+    `summarize Start = min(Timestamp), End = max(Timestamp)` по отфильтрованным строкам.
+  - |-
+    Затем `project Duration = End - Start`.
+solution: |
+  NetworkLogs
+  | where SrcIp == "198.51.100.23"
+  | summarize Start = min(Timestamp), End = max(Timestamp)
+  | project Duration = End - Start
+check:
+  mode: scalar

@@ -1,0 +1,27 @@
+id: 19-between
+chapter: 4
+order: 5
+title: Ночь утечки
+topic: between
+engines: [KustoLoco]
+points: 100
+theory: |
+  `x between (a .. b)` — короткая запись `x >= a and x <= b`, границы включаются. Работает с числами и датами.
+  Тип границ должен совпадать с типом колонки: для real пишите `5000.0`, а не `5000` (иначе KustoLoco падает).
+  Дата-время пишется литералом `datetime(2024-03-14 02:30)`; все времена в логах — UTC.
+  BabyKusto `between` не реализует — там пишут два сравнения через `and`.
+example: |
+  Transactions
+  | where Amount between (5000.0 .. 6000.0)
+  | take 10
+task: |
+  Выгрузка шла ночью `{{D-2}}`. Покажите всю сетевую активность учётной записи `E04217`
+  с 01:00 до 04:00 этой ночи (все колонки).
+hints:
+  - |-
+    Интервал: `datetime({{D-2}} 01:00) .. datetime({{D-2}} 04:00)`.
+  - |-
+    `NetworkLogs | where UserId == "E04217" and Timestamp between (...)`
+solution: |
+  NetworkLogs
+  | where UserId == "E04217" and Timestamp between (datetime({{D-2}} 01:00) .. datetime({{D-2}} 04:00))

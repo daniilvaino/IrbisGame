@@ -1,0 +1,27 @@
+id: 09-bin
+chapter: 2
+order: 4
+title: Пульс сети
+topic: bin()
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `bin(Timestamp, 1h)` округляет время вниз до начала часа — по нему удобно группировать события в интервалы.
+  Размер интервала — любой timespan: `5m`, `1h`, `1d`.
+  Типичный временной ряд: `summarize count() by bin(Timestamp, 1d)`.
+example: |
+  EmailEvents
+  | summarize Letters = count() by Day = bin(Timestamp, 1d)
+  | sort by Day asc
+task: |
+  Постройте почасовой объём отправленных данных: сумма `BytesSent` в `NetworkLogs` по часам,
+  начиная с `{{D-3}}` (`Timestamp >= datetime({{D-3}})`). Отсортируйте результат по объёму и найдите час, который выбивается.
+hints:
+  - |-
+    Сначала отфильтруйте по времени, потом `summarize sum(BytesSent) by bin(Timestamp, 1h)`.
+  - |-
+    `NetworkLogs | where Timestamp >= datetime({{D-3}}) | summarize Sent = sum(BytesSent) by bin(Timestamp, 1h)`
+solution: |
+  NetworkLogs
+  | where Timestamp >= datetime({{D-3}})
+  | summarize Sent = sum(BytesSent) by bin(Timestamp, 1h)

@@ -1,0 +1,27 @@
+id: 17-iff
+chapter: 4
+order: 3
+title: Ночная смена
+topic: iff()
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `iff(условие, если_да, если_нет)` — короткий if для одного условия.
+  `startofday(t)` — полночь того же дня, а `t - startofday(t)` — время суток в виде timespan, его можно сравнивать с `6h`.
+  (`hourofday()` в обоих движках не реализована — это обходной путь.)
+example: |
+  Transactions
+  | extend Kind = iff(Approved, "одобрено", "отказ")
+  | summarize count() by Kind
+task: |
+  Сколько проходов по пропускам было ночью и сколько днём? Ночь — первые 6 часов суток
+  (`Timestamp - startofday(Timestamp) < 6h`). Колонка с меткой — `Shift` со значениями «ночь» / «день».
+hints:
+  - |-
+    `extend Shift = iff(условие, "ночь", "день")`, затем `summarize count() by Shift`.
+  - |-
+    Условие: `Timestamp - startofday(Timestamp) < 6h`.
+solution: |
+  BadgeEvents
+  | extend Shift = iff(Timestamp - startofday(Timestamp) < 6h, "ночь", "день")
+  | summarize Count = count() by Shift

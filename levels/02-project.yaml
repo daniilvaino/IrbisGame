@@ -1,0 +1,26 @@
+id: 02-project
+chapter: 1
+order: 2
+title: Телефонная книга
+topic: project
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `project` оставляет только перечисленные колонки — в том порядке, в каком вы их написали.
+  Колонку можно переименовать: `project Сотрудник = Name`.
+  Противоположные операторы: `project-away` убирает колонки, `project-rename` переименовывает, не трогая остальные.
+example: |
+  Employees
+  | project EmployeeId, Title
+  | take 5
+task: |
+  Чтобы ориентироваться в людях, соберите справочник по всем сотрудникам: имя, отдел и рабочая почта
+  (колонки `Name`, `Department`, `Email` таблицы `Employees`).
+hints:
+  - |-
+    Нужен оператор, который выбирает колонки, без ограничения числа строк.
+  - |-
+    `Employees | project Name, ...` — допишите остальные две колонки.
+solution: |
+  Employees
+  | project Name, Department, Email

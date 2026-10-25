@@ -1,0 +1,28 @@
+id: 06-count
+chapter: 2
+order: 1
+title: Сколько писем снаружи
+topic: count
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `count` превращает таблицу в одну строку с одной колонкой `Count` — числом строк, дошедших до него.
+  Обычно ставится после фильтров: сначала `where`, потом `count`.
+  Ответ на такой вопрос — одно значение (скаляр).
+example: |
+  BadgeEvents
+  | where Result == "denied"
+  | count
+task: |
+  Сколько всего писем за 30 дней пришло в компанию извне (`Direction == "Inbound"`)?
+hints:
+  - |-
+    Отфильтруйте `EmailEvents` по направлению письма.
+  - |-
+    `EmailEvents | where Direction == "Inbound" | ...` — осталось посчитать строки.
+solution: |
+  EmailEvents
+  | where Direction == "Inbound"
+  | count
+check:
+  mode: scalar

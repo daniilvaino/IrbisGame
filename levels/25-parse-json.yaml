@@ -1,0 +1,31 @@
+id: 25-parse-json
+chapter: 6
+order: 1
+title: Откуда пришли письма
+topic: parse_json
+engines: [KustoLoco]
+points: 120
+theory: |
+  Колонка `Headers` — обычная строка, внутри которой JSON. `parse_json(строка)` превращает её в значение типа dynamic.
+  К свойствам обращаются через точку `H.SPF` или скобки `H["X-Originating-IP"]` (скобки нужны, если в имени есть дефис).
+  Результат — тоже dynamic; `tostring()` делает из него строку для сравнения и группировки.
+  `todynamic()` — синоним `parse_json`, но в обоих движках он не реализован.
+example: |
+  EmailEvents
+  | take 5
+  | extend H = parse_json(Headers)
+  | project Sender, Mailer = tostring(H["X-Mailer"]), Spf = tostring(H.SPF)
+task: |
+  Для писем с доменов-двойников (`@mayak-helpdesk.net` и `@mayak-pay.net`) достаньте из заголовков
+  `X-Originating-IP` — адрес, с которого письма отправлялись. Выведите уникальные пары `Sender`, `OriginIp`.
+hints:
+  - |-
+    Отбор: `Sender endswith "@mayak-helpdesk.net" or Sender endswith "@mayak-pay.net"`.
+  - |-
+    `extend H = parse_json(Headers) | project Sender, OriginIp = tostring(H["X-Originating-IP"]) | distinct Sender, OriginIp`
+solution: |
+  EmailEvents
+  | where Sender endswith "@mayak-helpdesk.net" or Sender endswith "@mayak-pay.net"
+  | extend H = parse_json(Headers)
+  | project Sender, OriginIp = tostring(H["X-Originating-IP"])
+  | distinct Sender, OriginIp

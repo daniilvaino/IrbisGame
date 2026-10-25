@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BabyKustoEngineDir>$(MSBuildThisFileDirectory)..\KustoGame.Engines.BabyKusto\bin\$(Configuration)\net9.0\</BabyKustoEngineDir>
+    <WebProjectDir>$(MSBuildThisFileDirectory)..\KustoGame.Web\</WebProjectDir>
+    <!-- wwwroot is produced by the Vite build below; it is served from disk, not tracked as static web assets
+         (their file list is taken before the frontend build runs and would go stale). -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);wwwroot\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KustoLoco.Core" Version="1.4.9" />
+    <PackageReference Include="Microsoft.Azure.Kusto.Language" Version="12.4.1" />
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KustoGame.Engines.Contracts\KustoGame.Engines.Contracts.csproj" />
+    <!-- BabyKusto is built against Kusto.Language 11.3 and breaks on 12.x (SyntaxKind values moved),
+         so it is not referenced directly: its output is copied to engines/BabyKusto and loaded
+         into a separate AssemblyLoadContext at runtime (see Engines/IsolatedEngineLoader.cs). -->
+    <ProjectReference Include="..\KustoGame.Engines.BabyKusto\KustoGame.Engines.BabyKusto.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\levels\*.yaml" Link="levels\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- `dotnet build` / `dotnet run` rebuild the frontend when its sources change. Skip with -p:SkipFrontendBuild=true. -->
+  <ItemGroup>
+    <FrontendSource Include="$(WebProjectDir)src\**\*;$(WebProjectDir)index.html;$(WebProjectDir)package.json;$(WebProjectDir)vite.config.ts;$(WebProjectDir)tsconfig.json" />
+  </ItemGroup>
+
+  <Target Name="BuildFrontend" BeforeTargets="BeforeBuild" Condition="'$(SkipFrontendBuild)' != 'true'"
+          Inputs="@(FrontendSource)" Outputs="$(MSBuildThisFileDirectory)wwwroot\index.html">
+    <Message Importance="high" Text="Сборка фронтенда (npm run build)…" />
+    <Exec Command="npm install" WorkingDirectory="$(WebProjectDir)" Condition="!Exists('$(WebProjectDir)node_modules')" />
+    <Exec Command="npm run build" WorkingDirectory="$(WebProjectDir)" />
+  </Target>
+
+  <Target Name="IncludeBabyKustoEngine" BeforeTargets="AssignTargetPaths">
+    <ItemGroup>
+      <_BabyKustoEngineFile Include="$(BabyKustoEngineDir)*.dll" />
+      <None Include="@(_BabyKustoEngineFile)" Link="engines\BabyKusto\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+
+</Project>

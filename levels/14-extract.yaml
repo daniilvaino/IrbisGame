@@ -1,0 +1,31 @@
+id: 14-extract
+chapter: 3
+order: 5
+title: Логин из ссылки
+topic: parse → extract()
+engines: [BabyKusto, KustoLoco]
+points: 120
+theory: |
+  Чтобы вынуть кусок строки, в Kusto есть оператор `parse`: `parse Url with * "user=" Login`.
+  Ни BabyKusto, ни KustoLoco `parse` не реализуют (см. таблицу движков), поэтому здесь используем функцию
+  `extract(регулярка, номер_группы, строка)` — она возвращает содержимое группы в скобках или пустую строку.
+  Пример: `extract(@"(\d+)$", 1, "route_42")` даёт `"42"`.
+example: |
+  EmailEvents
+  | where Url != ""
+  | extend Doc = extract(@"/doc/(\d+)", 1, Url)
+  | project Url, Doc
+  | take 10
+task: |
+  Фишинговые ссылки содержали логин жертвы: `...?user=<логин>`. Для всех переходов на `mayak-helpdesk.net`
+  достаньте логин в колонку `Login` и выведите уникальные пары `UserId`, `Login`.
+hints:
+  - |-
+    Регулярка для логина: `user=([\w.]+)` — группа 1.
+  - |-
+    `... | extend Login = extract(@"user=([\w.]+)", 1, Url) | distinct UserId, Login`
+solution: |
+  NetworkLogs
+  | where Url contains "mayak-helpdesk.net"
+  | extend Login = extract(@"user=([\w.]+)", 1, Url)
+  | distinct UserId, Login

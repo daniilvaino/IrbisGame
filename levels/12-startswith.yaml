@@ -1,0 +1,28 @@
+id: 12-startswith
+chapter: 3
+order: 3
+title: Чужой адрес
+topic: startswith
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `startswith` и `endswith` проверяют начало и конец строки (без учёта регистра; есть варианты `_cs`).
+  Для адресов это естественный способ выбрать подсеть: `SrcIp startswith "10.1"`.
+  Удалённые сотрудники подключаются через `VPN-GW` из домашних сетей `192.0.2.*`.
+example: |
+  NetworkLogs
+  | where Host == "VPN-GW" and SrcIp startswith "192.0.2."
+  | take 10
+task: |
+  Сайт-двойник работал на адресе из сети `198.51.100.*`. Проверьте, не было ли подключений
+  ИЗ этой сети: выведите `Timestamp`, `UserId`, `Host`, `DstIp`, `Url` для всех строк `NetworkLogs`,
+  где `SrcIp` начинается с `198.51.100.`.
+hints:
+  - |-
+    Нужна проверка начала строки в колонке `SrcIp`, затем `project`.
+  - |-
+    `NetworkLogs | where SrcIp startswith "198.51.100." | project ...`
+solution: |
+  NetworkLogs
+  | where SrcIp startswith "198.51.100."
+  | project Timestamp, UserId, Host, DstIp, Url

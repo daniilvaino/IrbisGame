@@ -1,0 +1,34 @@
+id: 24-union
+chapter: 5
+order: 4
+title: Хронология подозреваемого
+topic: union
+engines: [BabyKusto, KustoLoco]
+points: 140
+theory: |
+  `union A, B` склеивает строки нескольких таблиц одна под другой; колонки объединяются по именам.
+  Чтобы получилась аккуратная лента событий, приведите части к общему виду подзапросами:
+  `union (A | project Timestamp, What = ...), (B | project Timestamp, What = ...)`.
+  Константу-метку источника можно добавить прямо в `project`: `Source = "badge"`.
+example: |
+  union
+    (EmailEvents | where Sender == "gleb.shtern@mayak.corp" | project Timestamp, Source = "mail", Detail = Subject),
+    (BadgeEvents | where EmployeeId == "E04217" | project Timestamp, Source = "badge", Detail = Door)
+  | sort by Timestamp desc
+  | take 20
+task: |
+  Подрядчик Кирилл Лосев (`E03981`) раз за разом ломился в лабораторию. Соберите его хронологию:
+  проходы из `BadgeEvents` (`Source = "badge"`, `Detail` = дверь) и операции по карте из `Transactions`
+  (`Source = "card"`, `Detail` = продавец). Колонки `Timestamp`, `Source`, `Detail`, по возрастанию времени.
+hints:
+  - |-
+    Две части: `BadgeEvents | where EmployeeId == "E03981" | project Timestamp, Source = "badge", Detail = Door` и аналогично для карт.
+  - |-
+    `union (часть1), (часть2) | sort by Timestamp asc`
+solution: |
+  union
+    (BadgeEvents | where EmployeeId == "E03981" | project Timestamp, Source = "badge", Detail = Door),
+    (Transactions | where EmployeeId == "E03981" | project Timestamp, Source = "card", Detail = Merchant)
+  | sort by Timestamp asc
+check:
+  mode: ordered

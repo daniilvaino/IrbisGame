@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KustoGame.Engines.BabyKusto/KustoGame.Engines.BabyKusto.csproj" />
+    <Project Path="src/KustoGame.Engines.Contracts/KustoGame.Engines.Contracts.csproj" />
+    <Project Path="src/KustoGame.Server/KustoGame.Server.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KustoGame.Tests/KustoGame.Tests.csproj" />
+  </Folder>
+</Solution>

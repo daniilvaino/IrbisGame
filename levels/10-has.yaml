@@ -1,0 +1,29 @@
+id: 10-has
+chapter: 3
+order: 1
+title: Слово «пароль»
+topic: has
+engines: [KustoLoco]
+points: 100
+theory: |
+  `has` ищет целое слово (терм) и не зависит от регистра: `Subject has "отчёт"` найдёт «Отчёт по отгрузкам»,
+  но не «Отчётность». Это самый быстрый строковый поиск в настоящем Kusto — он идёт по индексу термов.
+  `!has` — отрицание, `has_any("a", "b")` — любое из слов.
+  BabyKusto операторы семейства `has` не реализует.
+example: |
+  EmailEvents
+  | where Subject has "договор"
+  | take 10
+task: |
+  Пользователи жалуются на «странные письма про пароли». Найдите письма, в теме которых есть слово «пароль»,
+  и посчитайте их по отправителям (`Sender`). Какой из отправителей настоящий?
+  (Заметьте: `has "пароль"` не найдёт «пароля» — это другое слово; для подстрок есть `contains`.)
+hints:
+  - |-
+    Фильтр по слову в `Subject`, затем `summarize ... by Sender`.
+  - |-
+    `EmailEvents | where Subject has "пароль" | summarize Count = count() by Sender`
+solution: |
+  EmailEvents
+  | where Subject has "пароль"
+  | summarize Count = count() by Sender

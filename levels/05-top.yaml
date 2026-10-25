@@ -1,0 +1,27 @@
+id: 05-top
+chapter: 1
+order: 5
+title: Самые тяжёлые соединения
+topic: top
+engines: [KustoLoco]
+points: 100
+theory: |
+  `top N by Колонка` — это `sort by Колонка desc | take N` одним оператором: вернёт N строк с наибольшими значениями.
+  Для наименьших добавьте `asc`: `top 3 by DurationSec asc`.
+  BabyKusto оператор `top` не реализует — там тот же результат даёт `sort by ... | take N`.
+example: |
+  Transactions
+  | top 3 by Amount
+task: |
+  Если данные утекли по сети, это должны быть очень большие отправки. Найдите в `NetworkLogs`
+  5 соединений с наибольшим `BytesSent` (все колонки, от большего к меньшему). Куда ушли данные?
+hints:
+  - |-
+    Объём отправки — колонка `BytesSent`.
+  - |-
+    `NetworkLogs | top 5 by ...`
+solution: |
+  NetworkLogs
+  | top 5 by BytesSent
+check:
+  mode: ordered

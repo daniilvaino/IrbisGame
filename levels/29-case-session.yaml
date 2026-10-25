@@ -1,0 +1,30 @@
+id: 29-case-session
+chapter: 7
+order: 2
+title: "Шаг 2: чужие руки"
+topic: расследование
+engines: [BabyKusto, KustoLoco]
+points: 200
+theory: |
+  Украденный пароль использовали извне: подключения шли с того же адреса, где жил сайт-двойник.
+  Один `summarize` может посчитать сразу и объём, и границы по времени; имя человека добавит `join` со справочником.
+example: |
+  NetworkLogs
+  | where Host == "VPN-GW"
+  | summarize Sessions = count(), Sent = sum(BytesSent) by UserId
+  | sort by Sent desc
+  | take 5
+task: |
+  Под чьей учётной записью работали с адреса `198.51.100.23`? Для каждой такой учётки посчитайте `Sent` (сумма `BytesSent`),
+  `Start` и `End` (первое и последнее соединение) и выведите `Name`, `Department`, `Sent`, `Start`, `End`.
+hints:
+  - |-
+    `NetworkLogs | where SrcIp == "198.51.100.23" | summarize Sent = sum(BytesSent), Start = min(Timestamp), End = max(Timestamp) by UserId`
+  - |-
+    Затем `join kind=inner Employees on $left.UserId == $right.EmployeeId` и `project`.
+solution: |
+  NetworkLogs
+  | where SrcIp == "198.51.100.23"
+  | summarize Sent = sum(BytesSent), Start = min(Timestamp), End = max(Timestamp) by UserId
+  | join kind=inner Employees on $left.UserId == $right.EmployeeId
+  | project Name, Department, Sent, Start, End

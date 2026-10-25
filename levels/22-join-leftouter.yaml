@@ -1,0 +1,35 @@
+id: 22-join-leftouter
+chapter: 5
+order: 2
+title: Ночные бдения
+topic: join kind=leftouter
+engines: [BabyKusto, KustoLoco]
+points: 120
+theory: |
+  `kind=leftouter` сохраняет все строки левой таблицы; если пары справа нет, правые колонки остаются пустыми.
+  Так считают «включая нули»: `countif(ПраваяКолонка != "")` даст 0 там, где пар не нашлось.
+  Обычный `inner` такие строки просто потерял бы.
+  Идиоматичная проверка — `isnotempty(x)`, но BabyKusto реализует её только для строк, а после `leftouter` колонка у него
+  становится dynamic; `x != ""` и `not(isempty(x))` работают в обоих движках.
+example: |
+  Employees
+  | where Department == "Продажи" and Office == "Казань"
+  | join kind=leftouter (Transactions | where Category == "Такси") on EmployeeId
+  | summarize Rides = countif(TxId != "") by Name
+task: |
+  Для КАЖДОГО сотрудника отдела «НИОКР Ирбис» посчитайте, сколько у него проходов по пропуску
+  между 00:00 и 05:00 (`Timestamp - startofday(Timestamp) < 5h`), включая тех, у кого их ноль.
+  Результат: `EmployeeId`, `Name`, `NightPasses`.
+hints:
+  - |-
+    Слева — сотрудники отдела, справа — подзапрос с ночными проходами, `kind=leftouter`.
+  - |-
+    После соединения: `summarize NightPasses = countif(Door != "") by EmployeeId, Name`.
+solution: |
+  Employees
+  | where Department == "НИОКР Ирбис"
+  | join kind=leftouter (
+      BadgeEvents
+      | where Timestamp - startofday(Timestamp) < 5h
+    ) on EmployeeId
+  | summarize NightPasses = countif(Door != "") by EmployeeId, Name

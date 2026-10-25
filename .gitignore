@@ -55,3 +55,34 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Node / JavaScript (src/KustoGame.Web)
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+*.local
+.eslintcache
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend build output: produced by `npm run build` (runs automatically on `dotnet build`)
+src/KustoGame.Server/wwwroot/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local archives
+*.zip

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Loaded by the server into its own AssemblyLoadContext together with Kusto.Language 11.3. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BabyKusto.Core" Version="0.1.8-preview" />
+    <PackageReference Include="Microsoft.Azure.Kusto.Language" Version="11.3.24011" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Shared with the host: must come from the default load context, never from the engine folder. -->
+    <ProjectReference Include="..\KustoGame.Engines.Contracts\KustoGame.Engines.Contracts.csproj" Private="false" />
+  </ItemGroup>
+
+</Project>

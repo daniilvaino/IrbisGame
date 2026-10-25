@@ -1,0 +1,33 @@
+id: 27-mv-expand
+chapter: 6
+order: 3
+title: Что ушло во вложениях
+topic: mv-expand
+engines: [KustoLoco]
+points: 140
+theory: |
+  `mv-expand Колонка` разворачивает массив: строка с массивом из трёх элементов превращается в три строки,
+  в каждой — один элемент. Элементу можно дать имя: `mv-expand File = Attachments`.
+  Пустой массив строк не даёт. После разворота элемент — dynamic, его свойства читаются как обычно: `File.name`.
+  BabyKusto `mv-expand` не реализует.
+example: |
+  EmailEvents
+  | where HasAttachment
+  | take 3
+  | mv-expand File = Attachments
+  | project MessageId, Name = tostring(File.name), Size = tolong(File.size)
+task: |
+  Проверьте исходящую почту (`Direction == "Outbound"`): разверните вложения и найдите файлы, в имени которых
+  есть `irbis`. Выведите `Timestamp`, `Sender`, `Recipient`, `FileName`.
+hints:
+  - |-
+    После `mv-expand File = Attachments` добавьте `extend FileName = tostring(File.name)` и фильтр `contains "irbis"`.
+  - |-
+    `EmailEvents | where Direction == "Outbound" and HasAttachment | mv-expand File = Attachments | ...`
+solution: |
+  EmailEvents
+  | where Direction == "Outbound" and HasAttachment
+  | mv-expand File = Attachments
+  | extend FileName = tostring(File.name)
+  | where FileName contains "irbis"
+  | project Timestamp, Sender, Recipient, FileName

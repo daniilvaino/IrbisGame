@@ -1,0 +1,30 @@
+id: 30-case-payer
+chapter: 7
+order: 3
+title: "Шаг 3: кто платил"
+topic: расследование
+engines: [KustoLoco]
+points: 250
+theory: |
+  Инфраструктура атакующего стоит денег. Если её оплатили корпоративной картой, в деталях платежа останется след.
+  Сравнивать dynamic-свойство со строкой нужно через `tostring()`.
+example: |
+  Transactions
+  | where Category == "ПО и подписки"
+  | project Timestamp, EmployeeId, Merchant, Service = tostring(Details.invoice.service)
+  | take 10
+task: |
+  Кто оплатил сервер с адресом `198.51.100.23` (`Details.invoice.ip`)? Ответ — одно значение: имя сотрудника.
+  Бонус для себя: посмотрите, что ещё этот человек покупал накануне.
+hints:
+  - |-
+    Фильтр: `tostring(Details.invoice.ip) == "198.51.100.23"`.
+  - |-
+    Затем `join kind=inner Employees on EmployeeId | project Name`.
+solution: |
+  Transactions
+  | where tostring(Details.invoice.ip) == "198.51.100.23"
+  | join kind=inner Employees on EmployeeId
+  | project Name
+check:
+  mode: scalar

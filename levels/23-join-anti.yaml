@@ -1,0 +1,28 @@
+id: 23-join-anti
+chapter: 5
+order: 3
+title: Невидимки
+topic: join kind=leftanti
+engines: [BabyKusto, KustoLoco]
+points: 120
+theory: |
+  `kind=leftanti` возвращает строки левой таблицы, для которых справа НЕТ ни одной пары — «кого нет в списке».
+  Зеркальный вариант — `rightanti`. Колонки правой таблицы в результат не попадают.
+example: |
+  Employees
+  | where Department == "Финансы"
+  | join kind=leftanti Transactions on EmployeeId
+  | count
+task: |
+  Подрядчики (`IsContractor == true`) московского офиса, которые за 30 дней ни разу не воспользовались пропуском,
+  — кандидаты на отзыв доступа. Выведите их `EmployeeId`, `Name`, `Department`.
+hints:
+  - |-
+    Слева — московские подрядчики, справа — `BadgeEvents`, вид соединения — `leftanti`.
+  - |-
+    `Employees | where IsContractor and Office == "Москва" | join kind=leftanti BadgeEvents on EmployeeId | project ...`
+solution: |
+  Employees
+  | where IsContractor and Office == "Москва"
+  | join kind=leftanti BadgeEvents on EmployeeId
+  | project EmployeeId, Name, Department

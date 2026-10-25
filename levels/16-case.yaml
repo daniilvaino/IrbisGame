@@ -1,0 +1,27 @@
+id: 16-case
+chapter: 4
+order: 2
+title: Крупные траты
+topic: case()
+engines: [KustoLoco]
+points: 100
+theory: |
+  `case(условие1, значение1, условие2, значение2, ..., значение_иначе)` проверяет условия по порядку
+  и возвращает значение первого истинного — как цепочка if / else if / else.
+  Последний аргумент обязателен: он для всех остальных случаев. BabyKusto `case()` не реализует.
+example: |
+  Employees
+  | extend Level = case(PerformanceScore >= 4.5, "звезда", PerformanceScore >= 3, "норма", "внимание")
+  | summarize count() by Level
+task: |
+  Финансисты просят разбить операции по картам на группы: `Amount >= 10000` — «крупная»,
+  `Amount >= 1000` — «средняя», остальные — «мелкая». Посчитайте число операций в каждой группе (колонка `Size`).
+hints:
+  - |-
+    Условия проверяются по порядку — начните с самого большого порога.
+  - |-
+    `extend Size = case(Amount >= 10000, "крупная", Amount >= 1000, "средняя", "мелкая")`, затем `summarize count() by Size`.
+solution: |
+  Transactions
+  | extend Size = case(Amount >= 10000, "крупная", Amount >= 1000, "средняя", "мелкая")
+  | summarize Count = count() by Size

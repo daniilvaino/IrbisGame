@@ -1,0 +1,34 @@
+id: 28-case-phishing
+chapter: 7
+order: 1
+title: "Шаг 1: попались на удочку"
+topic: расследование
+engines: [BabyKusto, KustoLoco]
+points: 200
+theory: |
+  Большие расследования строятся по шагам: каждое соединение отвечает на один вопрос.
+  Совет: собирайте запрос постепенно и смотрите режим «Пошагово» — видно, сколько строк остаётся после каждого оператора.
+  Соединять можно цепочкой: `A | join (B) on X | join (C) on $left.Y == $right.Z`.
+example: |
+  EmailEvents
+  | where Sender == "it-support@mayak-helpdesk.net"
+  | project Email = Recipient
+  | join kind=inner (Employees | project Email, Name) on Email
+  | take 5
+task: |
+  Кто из получивших фишинговое письмо от `it-support@mayak-helpdesk.net` действительно перешёл по ссылке
+  (есть строки в `NetworkLogs` с `mayak-helpdesk.net` в `Url`)? Выведите уникальные `Name`, `Department`.
+hints:
+  - |-
+    Цепочка: адреса получателей → `Employees` по `Email` (получите `EmployeeId`) → переходы из `NetworkLogs` по `UserId`.
+  - |-
+    Для второго соединения пригодится `on $left.EmployeeId == $right.UserId` и подзапрос `NetworkLogs | where Url contains "mayak-helpdesk.net" | distinct UserId`.
+  - |-
+    В конце — `distinct Name, Department`.
+solution: |
+  EmailEvents
+  | where Sender == "it-support@mayak-helpdesk.net"
+  | project Email = Recipient
+  | join kind=inner (Employees | project Email, EmployeeId, Name, Department) on Email
+  | join kind=inner (NetworkLogs | where Url contains "mayak-helpdesk.net" | distinct UserId) on $left.EmployeeId == $right.UserId
+  | distinct Name, Department

@@ -1,0 +1,29 @@
+id: 15-extend
+chapter: 4
+order: 1
+title: Мегабайты
+topic: extend
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `extend Имя = выражение` добавляет вычисляемую колонку, не трогая остальные.
+  Деление двух long даёт long (дробь отбрасывается), поэтому делите на `1048576.0`, чтобы получить real.
+  Новую колонку сразу можно использовать в `where` и `project`.
+example: |
+  Transactions
+  | extend AmountK = Amount / 1000.0
+  | project Merchant, Amount, AmountK
+  | take 5
+task: |
+  Переведите `BytesSent` в мегабайты (`SentMB = BytesSent / 1048576.0`) и покажите соединения,
+  где отправлено больше 100 МБ: `Timestamp`, `UserId`, `DstIp`, `SentMB`.
+hints:
+  - |-
+    `extend SentMB = ...`, потом `where SentMB > 100`.
+  - |-
+    `NetworkLogs | extend SentMB = BytesSent / 1048576.0 | where SentMB > 100 | project ...`
+solution: |
+  NetworkLogs
+  | extend SentMB = BytesSent / 1048576.0
+  | where SentMB > 100
+  | project Timestamp, UserId, DstIp, SentMB

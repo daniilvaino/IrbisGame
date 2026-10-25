@@ -1,0 +1,24 @@
+id: 07-summarize
+chapter: 2
+order: 2
+title: Почтовые потоки
+topic: summarize … by
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `summarize Агрегат by Колонка` группирует строки по значениям колонки и считает агрегат для каждой группы.
+  `count()` внутри `summarize` — число строк в группе. Имя результату можно дать: `summarize Писем = count() by Sender`.
+  Без `by` получится одна строка на всю таблицу.
+example: |
+  Employees
+  | summarize count() by Office
+task: |
+  Разберитесь в структуре почты: сколько писем каждого направления (`Direction`) прошло через шлюз?
+hints:
+  - |-
+    Группируйте `EmailEvents` по колонке `Direction`.
+  - |-
+    `EmailEvents | summarize Count = count() by ...`
+solution: |
+  EmailEvents
+  | summarize Count = count() by Direction

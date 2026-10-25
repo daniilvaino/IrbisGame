@@ -1,0 +1,28 @@
+id: 11-contains
+chapter: 3
+order: 2
+title: Кто кликнул
+topic: contains
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `contains` ищет подстроку в любом месте строки без учёта регистра; `contains_cs` — с учётом.
+  Он медленнее `has`, зато находит и куски слов, и адреса целиком.
+  Осторожно: `Url contains "helpdesk"` найдёт и настоящий `helpdesk.mayak.corp`, и поддельный сайт — пишите подстроку точнее.
+  `distinct Колонка` оставляет уникальные значения.
+example: |
+  NetworkLogs
+  | where Url contains "helpdesk"
+  | distinct Url
+task: |
+  Фишинговые письма вели на сайт `mayak-helpdesk.net`. Кто из сотрудников открывал его?
+  Выведите уникальные `UserId` из `NetworkLogs`.
+hints:
+  - |-
+    Ищите подстроку `mayak-helpdesk.net` в колонке `Url`.
+  - |-
+    `NetworkLogs | where Url contains "mayak-helpdesk.net" | distinct ...`
+solution: |
+  NetworkLogs
+  | where Url contains "mayak-helpdesk.net"
+  | distinct UserId

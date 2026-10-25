@@ -1,0 +1,30 @@
+id: 21-join-inner
+chapter: 5
+order: 1
+title: Закрытая дверь
+topic: join kind=inner
+engines: [BabyKusto, KustoLoco]
+points: 120
+theory: |
+  `join kind=inner Правая on Ключ` соединяет строки двух таблиц с одинаковым значением ключа; остаются только пары.
+  Если ключ называется по-разному: `on $left.UserId == $right.EmployeeId`.
+  Правой стороной может быть подзапрос в скобках: `join (Employees | project EmployeeId, Name) on EmployeeId`.
+  Совпадающие имена колонок правой таблицы получают суффикс `1`.
+example: |
+  Transactions
+  | where Amount > 30000
+  | join kind=inner Employees on EmployeeId
+  | project Timestamp, Name, Merchant, Amount
+task: |
+  Кто пытался попасть в «Лабораторию Ирбис» и получил отказ? Соедините отказы на двери
+  `"Лаборатория Ирбис"` с `Employees` и выведите `Timestamp`, `Name`, `Department`.
+hints:
+  - |-
+    Сначала отфильтруйте `BadgeEvents` по двери и результату, потом `join kind=inner Employees on EmployeeId`.
+  - |-
+    `... | join kind=inner Employees on EmployeeId | project Timestamp, Name, Department`
+solution: |
+  BadgeEvents
+  | where Door == "Лаборатория Ирбис" and Result == "denied"
+  | join kind=inner Employees on EmployeeId
+  | project Timestamp, Name, Department

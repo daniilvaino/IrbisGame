@@ -1,0 +1,27 @@
+id: 13-regex
+chapter: 3
+order: 4
+title: Домены-двойники
+topic: matches regex
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `matches regex` проверяет строку регулярным выражением (синтаксис RE2: `.`, `[a-z]+`, `\d`, `^`, `$`).
+  Регулярки удобно писать в «сырых» строках `@"..."` — там обратный слэш не нужно удваивать.
+  Регистр учитывается; для поиска без учёта регистра добавьте `(?i)` в начало шаблона.
+example: |
+  Employees
+  | where Email matches regex @"^[a-z]+\.[a-z]+\d@"
+  | project Name, Email
+task: |
+  Злоумышленники любят домены, похожие на настоящий: `mayak-что-то.net`. Найдите всех уникальных отправителей,
+  чей адрес заканчивается на `@mayak-<буквы>.net`.
+hints:
+  - |-
+    Шаблон домена: `@mayak-[a-z]+\.net$` — точку перед `net` нужно экранировать.
+  - |-
+    `EmailEvents | where Sender matches regex @"..." | distinct Sender`
+solution: |
+  EmailEvents
+  | where Sender matches regex @"@mayak-[a-z]+\.net$"
+  | distinct Sender

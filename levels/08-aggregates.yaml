@@ -1,0 +1,25 @@
+id: 08-aggregates
+chapter: 2
+order: 3
+title: Портрет отделов
+topic: sum / avg / dcount
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  В одном `summarize` можно посчитать несколько агрегатов сразу, через запятую.
+  `sum(x)`, `avg(x)`, `min(x)`, `max(x)` работают с числами; `dcount(x)` — число различных значений;
+  `countif(условие)` — число строк, где условие истинно.
+example: |
+  Transactions
+  | summarize Total = sum(Amount), Avg = avg(Amount), Merchants = dcount(Merchant) by Category
+task: |
+  Для отчёта руководству по каждому отделу (`Department`) посчитайте: число сотрудников,
+  средний `PerformanceScore` и сколько разных офисов (`Office`) в отделе. Имена колонок — на ваш вкус.
+hints:
+  - |-
+    Три агрегата: `count()`, `avg(PerformanceScore)`, `dcount(Office)`.
+  - |-
+    `Employees | summarize Headcount = count(), AvgScore = ..., Offices = ... by Department`
+solution: |
+  Employees
+  | summarize Headcount = count(), AvgScore = avg(PerformanceScore), Offices = dcount(Office) by Department

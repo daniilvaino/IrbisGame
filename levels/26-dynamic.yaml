@@ -1,0 +1,29 @@
+id: 26-dynamic
+chapter: 6
+order: 2
+title: Счета за серверы
+topic: dynamic-свойства
+engines: [KustoLoco]
+points: 120
+theory: |
+  Колонка типа dynamic (`Transactions.Details`) уже хранит JSON — `parse_json` не нужен, свойства доступны сразу:
+  `Details.geo.city`, `Details.invoice.ip`. Несуществующее свойство даёт пустое значение, а не ошибку.
+  `tostring()` / `tolong()` приводят dynamic к обычным типам.
+  BabyKusto умеет обращаться к свойствам, но `tostring()` возвращает строку вместе с JSON-кавычками.
+example: |
+  Transactions
+  | where tostring(Details.geo.country) != "RU"
+  | project Merchant, Country = tostring(Details.geo.country), Channel = tostring(Details.channel)
+  | take 10
+task: |
+  В оплатах `CloudNest VPS` поле `Details.invoice` описывает арендованный сервер. Выведите `Timestamp`, `EmployeeId`,
+  `Ip` (из `invoice.ip`) и `Plan` (из `invoice.plan`) для всех таких операций.
+hints:
+  - |-
+    `Transactions | where Merchant == "CloudNest VPS"` — и дальше `project` со свойствами `Details.invoice...`.
+  - |-
+    `project Timestamp, EmployeeId, Ip = tostring(Details.invoice.ip), Plan = tostring(Details.invoice.plan)`
+solution: |
+  Transactions
+  | where Merchant == "CloudNest VPS"
+  | project Timestamp, EmployeeId, Ip = tostring(Details.invoice.ip), Plan = tostring(Details.invoice.plan)

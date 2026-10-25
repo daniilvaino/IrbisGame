@@ -1,0 +1,27 @@
+id: 18-ago
+chapter: 4
+order: 4
+title: Последние трое суток
+topic: ago()
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `now()` — текущий момент, `ago(3d)` — момент три дня назад; это обычная datetime-константа.
+  Литералы интервалов: `30s`, `15m`, `6h`, `3d`. Классический фильтр «за последние сутки»: `where Timestamp > ago(1d)`.
+  Мир игры привязан к сегодняшней дате, поэтому `ago()` работает на этих данных как на живых логах.
+example: |
+  NetworkLogs
+  | where Timestamp > ago(1d) and Action == "blocked"
+  | count
+task: |
+  Служба безопасности хочет знать, кто в последние 3 суток упирался в закрытые двери. Для отказов
+  (`Result == "denied"`) в `BadgeEvents` за последние 3 дня посчитайте число отказов по каждому `EmployeeId`.
+hints:
+  - |-
+    Два условия в `where`: время позже `ago(3d)` и результат прохода.
+  - |-
+    `BadgeEvents | where Timestamp > ago(3d) and Result == "denied" | summarize Denied = count() by EmployeeId`
+solution: |
+  BadgeEvents
+  | where Timestamp > ago(3d) and Result == "denied"
+  | summarize Denied = count() by EmployeeId

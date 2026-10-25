@@ -1,0 +1,24 @@
+{
+  "name": "kustogame-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@kusto/monaco-kusto": "15.0.1",
+    "monaco-editor": "0.55.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.26",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "4.7.0",
+    "typescript": "5.9.3",
+    "vite": "5.4.21"
+  }
+}

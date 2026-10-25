@@ -1,0 +1,31 @@
+id: 04-sort
+chapter: 1
+order: 4
+title: Почтовый ящик Штерна
+topic: sort
+engines: [BabyKusto, KustoLoco]
+points: 100
+theory: |
+  `sort by Колонка desc` упорядочивает строки (синоним — `order by`). `desc` — по убыванию (по умолчанию), `asc` — по возрастанию.
+  Можно сортировать по нескольким колонкам: `sort by Department asc, Name asc`.
+  Сортировка — единственный способ получить строки в определённом порядке.
+example: |
+  Transactions
+  | where Category == "Авиабилеты"
+  | sort by Amount desc
+  | take 10
+task: |
+  Посмотрите, что приходило Штерну: письма с получателем `gleb.shtern@mayak.corp`, от самых новых к старым.
+  Нужны только колонки `Timestamp`, `Sender`, `Subject`. Здесь порядок строк проверяется.
+hints:
+  - |-
+    Цепочка: фильтр по `Recipient` → сортировка по `Timestamp` → выбор колонок.
+  - |-
+    `... | sort by Timestamp desc | project Timestamp, Sender, Subject`
+solution: |
+  EmailEvents
+  | where Recipient == "gleb.shtern@mayak.corp"
+  | sort by Timestamp desc
+  | project Timestamp, Sender, Subject
+check:
+  mode: ordered
