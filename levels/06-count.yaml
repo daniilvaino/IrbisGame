@@ -14,7 +14,7 @@ example: |
   | where Result == "denied"
   | count
 task: |
-  Сколько всего писем за 30 дней пришло в компанию извне (`Direction == "Inbound"`)?
+  Сколько всего писем пришло в компанию извне (`Direction == "Inbound"`)?
 hints:
   - |-
     Отфильтруйте `EmailEvents` по направлению письма.
