@@ -14,7 +14,7 @@ example: |
   | join kind=leftanti Transactions on EmployeeId
   | count
 task: |
-  Подрядчики (`IsContractor == true`) московского офиса, которые за 30 дней ни разу не воспользовались пропуском,
+  Подрядчики (`IsContractor == true`) московского офиса (`Office == "Москва"`), которые за 30 дней ни разу не воспользовались пропуском,
   — кандидаты на отзыв доступа. Выведите их `EmployeeId`, `Name`, `Department`.
 hints:
   - |-
