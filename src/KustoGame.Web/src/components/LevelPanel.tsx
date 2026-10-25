@@ -118,93 +118,98 @@ export function LevelPanel({ level, chapter, engine, progress, updateLevel, onSw
         <div className="level">
             <LevelHeader level={level} chapter={chapter} state={state} />
 
-            <section className="card theory">
-                <h4>Теория</h4>
-                <RichText text={level.theory} />
-                <div className="example">
-                    <pre>{level.example}</pre>
-                    <div className="example-actions">
-                        <button onClick={() => insertExample(false)}>Вставить</button>
-                        <button className="primary" onClick={() => insertExample(true)}>
-                            Вставить и выполнить
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section className="card task">
-                <h4>Задача</h4>
-                <RichText text={level.task} />
-                <div className="muted small">Проверка: {CHECK_LABELS[level.checkMode]}.</div>
-            </section>
-
-            <section className="hints">
-                {level.hints.slice(0, state.hintsUsed).map((hint, i) => (
-                    <div key={i} className="hint">
-                        <span className="hint-index">Подсказка {i + 1}</span>
-                        <RichText text={hint} />
-                    </div>
-                ))}
-                <div className="hint-actions">
-                    {state.hintsUsed < level.hints.length && (
-                        <button onClick={showHint}>
-                            💡 Подсказка {state.hintsUsed + 1} из {level.hints.length}
-                            {!state.solved && <span className="muted"> (−{nextHintCost} очков)</span>}
-                        </button>
-                    )}
-                    {!state.solved && !state.revealed && (
-                        <span className="muted">
-                            Можно заработать: <b>{potential}</b> из {level.points}
-                        </span>
-                    )}
-                    {!state.solved && !solution && (
-                        <button className="ghost" onClick={() => void giveUp()}>
-                            Сдаться и посмотреть эталон
-                        </button>
-                    )}
-                </div>
-            </section>
-
-            <Workbench
-                ref={workbenchRef}
-                engine={engine}
-                query={query}
-                onQueryChange={changeQuery}
-                onResult={onResult}
-                actions={
-                    <button className="accent" onClick={() => void runCheck()} disabled={checking}>
-                        {checking ? 'Проверяю…' : '✓ Проверить ответ'}
-                    </button>
-                }
-            />
-
-            {failure && <div className="error-panel"><pre className="error-text">{failure}</pre></div>}
-            {check && <DiffView check={check} />}
-
-            {solution && (
-                <section className="compare">
-                    <h4>{check?.passed ? 'Ваш запрос и эталон' : 'Эталонное решение'}</h4>
-                    <div className="compare-grid">
-                        <div>
-                            <div className="compare-title">Ваш запрос</div>
-                            <pre className="code">{query.trim() || '—'}</pre>
-                            {playerResult && (
-                                <ResultTable columns={playerResult.columns} rows={playerResult.rows} totalRows={playerResult.totalRows} maxHeight={260} />
-                            )}
-                        </div>
-                        <div>
-                            <div className="compare-title">Эталон</div>
-                            <pre className="code">{solution.query}</pre>
-                            <ResultTable columns={solution.columns} rows={solution.rows} totalRows={solution.totalRows} maxHeight={260} />
+            <div className="lesson-content">
+                <section className="card theory">
+                    <h4>Теория</h4>
+                    <RichText text={level.theory} />
+                    <div className="example">
+                        <pre>{level.example}</pre>
+                        <div className="example-actions">
+                            <button onClick={() => insertExample(false)}>Вставить</button>
+                            <button className="primary" onClick={() => insertExample(true)}>
+                                Вставить и выполнить
+                            </button>
                         </div>
                     </div>
-                    {check?.passed && onNext && (
-                        <button className="primary next" onClick={onNext}>
-                            Следующий уровень →
-                        </button>
-                    )}
                 </section>
-            )}
+
+                <section className="card task">
+                    <h4>Задача</h4>
+                    <RichText text={level.task} />
+                    <div className="muted small">Проверка: {CHECK_LABELS[level.checkMode]}.</div>
+                </section>
+
+                <section className="hints">
+                    {level.hints.slice(0, state.hintsUsed).map((hint, i) => (
+                        <div key={i} className="hint">
+                            <span className="hint-index">Подсказка {i + 1}</span>
+                            <RichText text={hint} />
+                        </div>
+                    ))}
+                    <div className="hint-actions">
+                        {state.hintsUsed < level.hints.length && (
+                            <button onClick={showHint}>
+                                💡 Подсказка {state.hintsUsed + 1} из {level.hints.length}
+                                {!state.solved && <span className="muted"> (−{nextHintCost} очков)</span>}
+                            </button>
+                        )}
+                        {!state.solved && !state.revealed && (
+                            <span className="muted">
+                                Можно заработать: <b>{potential}</b> из {level.points}
+                            </span>
+                        )}
+                        {!state.solved && !solution && (
+                            <button className="ghost" onClick={() => void giveUp()}>
+                                Сдаться и посмотреть эталон
+                            </button>
+                        )}
+                    </div>
+                </section>
+
+            </div>
+
+            <div className="lesson-workspace">
+                <Workbench
+                    ref={workbenchRef}
+                    engine={engine}
+                    query={query}
+                    onQueryChange={changeQuery}
+                    onResult={onResult}
+                    actions={
+                        <button className="accent" onClick={() => void runCheck()} disabled={checking}>
+                            {checking ? 'Проверяю…' : '✓ Проверить ответ'}
+                        </button>
+                    }
+                />
+
+                {failure && <div className="error-panel"><pre className="error-text">{failure}</pre></div>}
+                {check && <DiffView check={check} />}
+
+                {solution && (
+                    <section className="compare">
+                        <h4>{check?.passed ? 'Ваш запрос и эталон' : 'Эталонное решение'}</h4>
+                        <div className="compare-grid">
+                            <div>
+                                <div className="compare-title">Ваш запрос</div>
+                                <pre className="code">{query.trim() || '—'}</pre>
+                                {playerResult && (
+                                    <ResultTable columns={playerResult.columns} rows={playerResult.rows} totalRows={playerResult.totalRows} maxHeight={260} />
+                                )}
+                            </div>
+                            <div>
+                                <div className="compare-title">Эталон</div>
+                                <pre className="code">{solution.query}</pre>
+                                <ResultTable columns={solution.columns} rows={solution.rows} totalRows={solution.totalRows} maxHeight={260} />
+                            </div>
+                        </div>
+                        {check?.passed && onNext && (
+                            <button className="primary next" onClick={onNext}>
+                                Следующий уровень →
+                            </button>
+                        )}
+                    </section>
+                )}
+            </div>
         </div>
     );
 }

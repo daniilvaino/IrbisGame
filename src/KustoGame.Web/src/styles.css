@@ -214,9 +214,11 @@ select {
 }
 .layout > * {
     min-height: 0;
+    min-width: 0;
     overflow: auto;
 }
 .center {
+    container-type: inline-size;
     padding: 16px 20px 40px;
 }
 
@@ -311,8 +313,40 @@ select {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    max-width: 1200px;
+    width: 100%;
+    min-width: 0;
 }
+.lesson-content,
+.lesson-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.level-head,
+.workbench,
+.result,
+.compare-grid > div {
+    min-width: 0;
+}
+
+/* Split only when the center itself has room for both readable columns. */
+@container (min-width: 1250px) {
+    .level {
+        display: grid;
+        grid-template-columns: minmax(360px, 0.8fr) minmax(0, 1.2fr);
+        gap: 20px 24px;
+        align-items: start;
+    }
+    .level-head {
+        grid-column: 1 / -1;
+    }
+    .lesson-workspace .editor {
+        min-height: clamp(280px, 32vh, 480px);
+    }
+}
+
 .level-title {
     display: flex;
     gap: 10px;
@@ -373,7 +407,8 @@ select {
 pre.code {
     margin: 0;
     flex: 1;
-    min-width: 260px;
+    min-width: min(260px, 100%);
+    overflow-wrap: anywhere;
     background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: 6px;
